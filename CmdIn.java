@@ -15,13 +15,21 @@ final class CmdIn implements Command {
 		this.video = video;
 	}
 	public boolean run() {
-		// TODO
-		return false;
+		// DONE
+		try {
+			oldvalue = inventory.checkIn(video);
+			inventory.getHistory().add(this);
+			return true;
+		} catch (IllegalArgumentException e) {
+			return false;
+		}
 	}
 	public void undo() {
-		// TODO
+		// DONE
+		inventory.replaceEntry(video,oldvalue);
 	}
 	public void redo() {
-		// TODO
+		// DONE
+		oldvalue = inventory.checkIn(video);
 	}
 }

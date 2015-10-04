@@ -1,10 +1,16 @@
 package myhw3.data;
 
 import java.util.Map;
+
 import myhw3.command.CommandHistory;
+import myhw3.command.CommandHistoryObj;
+
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Implementation of Inventory interface.
@@ -15,9 +21,9 @@ final class InventorySet implements Inventory {
 	private final CommandHistory history;
 
 	InventorySet() {
-		// TODO
-		this.data = null;
-		this.history = null;
+		// DONE
+		this.data = new HashMap<Video, Record>();
+		this.history = new CommandHistoryObj();
 		 
 	}
 
@@ -40,13 +46,13 @@ final class InventorySet implements Inventory {
 	}
 
 	public int size() {
-		// TODO
-		return 0;
+		// DONE
+		return data.size();
 	}
 
 	public Record get(Video v) {
-		// TODO
-		return null;
+		// DONE
+		return data.get(v);
 	}
 
 	public Iterator<Record> iterator() {
@@ -62,8 +68,10 @@ final class InventorySet implements Inventory {
 	}
 
 	public Iterator<Record> iterator(Comparator<Record> comparator) {
-		// TODO
-		return null;
+		// DONE
+		List<Record> recordList = new ArrayList<Record>(data.values());
+		Collections.sort(recordList, comparator);
+		return Collections.unmodifiableList(recordList).iterator();
 	}
 
 	/**
@@ -80,8 +88,34 @@ final class InventorySet implements Inventory {
 	 * @throws IllegalArgumentException if video null, change is zero, if attempting to remove more copies than are owned, or if attempting to remove copies that are checked out.
 	 */
 	Record addNumOwned(Video video, int change) {
-		// TODO
-		return null;
+		// DONE
+		if (video == null || change == 0)
+			throw new IllegalArgumentException("Video or change not valid");
+		
+		RecordObj r = (RecordObj) data.get(video);
+		//System.out.println("First " + r);
+		if (r == null && change < 1)
+			throw new IllegalArgumentException("Don't have that vid in database");
+		else if (r == null){
+			data.put(video, new RecordObj(video, change, 0, 0));
+			return null;
+		}
+		else if (r.numOwned+change < r.numOut)
+			throw new IllegalArgumentException("Not enough copies to do this");
+		else if (r.numOwned + change < 1)
+			data.remove(video);
+		else {
+			int newNumOwned = r.numOwned + change;
+			RecordObj replacement = new RecordObj(video, newNumOwned, r.numOut(), r.numRentals());
+			replaceEntry(video, replacement);
+		}
+		//test that r is not changing
+		//QUESTION FOR PROF RIELY: I thought r is only a pointer to data.get(video), 
+		//how come line 109 of the code not be changing it?
+//		System.out.println("Second " + r);
+//		System.out.println("Database " + data.get(video));
+		return r;
+
 	}
 
 	/**
@@ -92,8 +126,13 @@ final class InventorySet implements Inventory {
 	 * equals numOwned.
 	 */
 	Record checkOut(Video video) {
-		// TODO
-		return null;
+		// DONE
+		RecordObj r = (RecordObj) data.get(video);
+		if (r == null || r.numOut == r.numOwned)
+			throw new IllegalArgumentException("Video not in database");
+		RecordObj updatedRecord = new RecordObj(video, r.numOwned(), r.numOut()+1, r.numRentals()+1);
+		replaceEntry(video, updatedRecord);
+		return r;
 	}
 
 	/**
@@ -104,8 +143,14 @@ final class InventorySet implements Inventory {
 	 * non-positive.
 	 */
 	Record checkIn(Video video) {
-		// TODO
-		return null;
+		// DONE
+		//QUESTION FOR PROF RIELY: do I still need to cast RecordObj on line 148?
+		Record r =  data.get(video);
+		if (r == null || r.numOut() < 1)
+			throw new IllegalArgumentException();
+		RecordObj updatedRecord = new RecordObj(video, r.numOwned(), r.numOut()-1, r.numRentals());
+		replaceEntry(video, updatedRecord);
+		return r;
 	}
 
 	/**
@@ -113,16 +158,20 @@ final class InventorySet implements Inventory {
 	 * @return A copy of the previous inventory as a Map
 	 */
 	Map<Video,Record> clear() {
-		// TODO
-		return null;
+		// DONE
+		Map<Video, Record> clearedMap = new HashMap<Video, Record>();
+		Map<Video, Record> temp = data;
+		replaceMap(clearedMap);
+		return temp;
 	}
 
 	/**
 	 * Return a reference to the history.
 	 */
 	CommandHistory getHistory() {
-		// TODO
-		return null;
+		// DONE
+		// QUESTION FOR PROF: Is this really protecting my CommandHistory obj?
+		return history;
 	}
 
 	public String toString() {
@@ -185,4 +234,13 @@ final class InventorySet implements Inventory {
 			return buffer.toString();
 		}
 	}
+//	public static void main(String[] args){
+//		InventorySet inv = new InventorySet();
+//		final VideoObj v1 = new VideoObj( "A", 2000, "B" );
+//		final VideoObj v2 = new VideoObj( "B", 2000, "B" );
+//		
+//		inv.addNumOwned(v1, 4);
+//		inv.addNumOwned(v1, 4);
+//		System.out.println(inv);
+//	}
 }

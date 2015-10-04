@@ -1,5 +1,6 @@
 package myhw3.data;
 
+
 /**
  * Implementation of Video interface.
  * @see Data
@@ -8,6 +9,7 @@ final class VideoObj implements Video {
 	private final String title;
 	private final int    year;
 	private final String director;
+	private final int hashConstant = 37;
 
 	/**
 	 * Initialize all object attributes.
@@ -21,37 +23,72 @@ final class VideoObj implements Video {
 	}
 
 	public String director() {
-		// TODO
-		return "director";
+		// DONE
+		return director;
 	}
 
 	public String title() {
-		// TODO
-		return "title";
+		// DONE
+		return title;
 	}
 
 	public int year() {
-		// TODO
-		return -1;
+		// DONE
+		return year;
 	}
 
 	public boolean equals(Object thatObject) {
-		// TODO
-		return false;
+		// DONE
+		if (!(thatObject instanceof Video))
+			return false;
+		Video that = (Video) thatObject;
+		return year == that.year() &&
+				title.equals(that.title()) &&
+				director.equals(that.director());
 	}
 
+	
 	public int hashCode() {
-		// TODO
-		return -1;
+		// DONE		 
+		int hash = 17;
+		hash = hashConstant*hash + title.hashCode();
+		hash = hashConstant*hash + year;
+		hash = hashConstant*hash + director.hashCode();
+		
+		return hash;
 	}
 
 	public int compareTo(Video that) {
-		// TODO
-		return -1;
+		// DONE
+		int titleDiff = title.compareTo(that.title());
+		
+		if (titleDiff != 0){
+			return titleDiff;
+		}
+			
+		int yearDiff = year - that.year();
+		if (yearDiff != 0){
+			return yearDiff;
+		}
+		
+		int dirDiff = director.compareTo(that.director());
+		if (dirDiff != 0){
+			return dirDiff;
+		}
+		return 0;
+		
 	}
 
 	public String toString() {
-		// TODO
-		return "El Mariachi (1996) : Rodriguez";
+		// DONE
+		//Should look like "El Mariachi (1996) : Rodriguez";
+		StringBuilder buffer = new StringBuilder();
+		buffer.append(title);
+		buffer.append(" (");
+		buffer.append(year);
+		buffer.append(") : ");
+		buffer.append(director);
+		return buffer.toString();
 	}
+
 }

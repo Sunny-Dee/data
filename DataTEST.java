@@ -1,6 +1,7 @@
 package myhw3.data;
 
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 // TODO: complete the tests
@@ -60,6 +61,18 @@ public class DataTEST {
 	@Test
 	public void testConstructorExceptionDirector() {
 		// TODO
+		try {
+			Data.newVideo("Y", 2002, null);
+			fail();
+		} catch (IllegalArgumentException e) { }
+		try {
+			Data.newVideo("Y", 2002, "");
+			fail();
+		} catch (IllegalArgumentException e) { }
+		try {
+			Data.newVideo("Y", 2002, " ");
+			fail();
+		} catch (IllegalArgumentException e) { }
 	}
 
 }
