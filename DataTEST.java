@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-// TODO: complete the tests
+// DONE, I THINK: complete the tests
 public class DataTEST {
 	@Test
 	public void testConstructorAndAttributes() {
@@ -60,7 +60,7 @@ public class DataTEST {
 
 	@Test
 	public void testConstructorExceptionDirector() {
-		// TODO
+		// DONE
 		try {
 			Data.newVideo("Y", 2002, null);
 			fail();
@@ -74,5 +74,12 @@ public class DataTEST {
 			fail();
 		} catch (IllegalArgumentException e) { }
 	}
-
+	
+	@Test
+	public void testToString() {
+		String s = Data.newVideo("A",2000,"B").toString();
+		assertEquals( s, "A (2000) : B" );
+		s = Data.newVideo(" A ",2000," B ").toString();
+		assertEquals( s, "A (2000) : B" );
+	}
 }

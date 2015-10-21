@@ -73,6 +73,21 @@ final class InventorySet implements Inventory {
 		Collections.sort(recordList, comparator);
 		return Collections.unmodifiableList(recordList).iterator();
 	}
+	
+	
+//	//Helper method by Deliana
+//	public String topNvids(int topN, Comparator<Record> comparator){
+//		Iterator<Record> iter = iterator(comparator);
+//		StringBuilder buffer = new StringBuilder();
+//		buffer.append("Top " + topN + " videos:\n");
+//		for (int i = 1; i <= topN; i++){
+//			Record r = iter.next();
+//			buffer.append(i +".  ");
+//			buffer.append(r);
+//			buffer.append("\n");
+//		}	
+//		return buffer.toString();
+//	}
 
 	/**
 	 * Add or remove copies of a video from the inventory.
@@ -145,7 +160,7 @@ final class InventorySet implements Inventory {
 	Record checkIn(Video video) {
 		// DONE
 		//QUESTION FOR PROF RIELY: do I still need to cast RecordObj on line 148?
-		Record r =  data.get(video);
+		Record r = data.get(video);
 		if (r == null || r.numOut() < 1)
 			throw new IllegalArgumentException();
 		RecordObj updatedRecord = new RecordObj(video, r.numOwned(), r.numOut()-1, r.numRentals());
@@ -170,7 +185,7 @@ final class InventorySet implements Inventory {
 	 */
 	CommandHistory getHistory() {
 		// DONE
-		// QUESTION FOR PROF: Is this really protecting my CommandHistory obj?
+		// 
 		return history;
 	}
 
